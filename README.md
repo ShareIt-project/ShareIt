@@ -55,7 +55,7 @@ The peer connections are managed by an external handshake channel. Currently is
 being used primarily [PubNub](http://www.pubnub.com) and [SimpleSignaling]
 (https://github.com/piranna/SimpleSignaling) using a test server hosted on
 Nodejitsu, but it's being researched to use some more standard and distributed
-handshake protocols in an annonimous way so this single-point-of-failure could
+handshake protocols in an anonymous way so this single-point-of-failure could
 be dropped.
 
 Regarding to the browser, it's recomended to use a high edge one. Test are being
@@ -63,7 +63,7 @@ done on Chromium v24 at this moment and currently it's the only officially
 supported (news about it being used sucesfully on other browser are greatly
 accepted!!! :-D ). You can test it locally opening two browser tabs, but it
 should work also if used between several machines (it was succesfully tested
-to transfer files through the wild Internet from Findland to Spain... :-) ).
+to transfer files through the wild Internet from Finland to Spain... :-) ).
 
 ## External libraries
 ### UI

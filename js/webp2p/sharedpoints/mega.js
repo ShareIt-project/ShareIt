@@ -1,4 +1,3 @@
-function Mega()
-{
-    
+function Mega() {
+
 }

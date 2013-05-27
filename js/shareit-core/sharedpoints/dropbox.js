@@ -33,7 +33,7 @@ _priv.Dropbox = function(db, options)
     {
       versionTag = stat.versionTag;
 
-      for(var i = 0, entry; entry = entries[i]; i++)
+      for(var i=0, entry; entry=entries[i]; i++)
         if(entry.isFile) files.push(
         {
           path: entry.path,

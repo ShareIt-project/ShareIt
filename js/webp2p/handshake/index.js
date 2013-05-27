@@ -56,6 +56,8 @@ function Transport_Presence_init(transport, peersManager, max_connections)
  */
 _priv.HandshakeManager = function(json_uri, peersManager)
 {
+  EventTarget.call(this);
+
   var self = this;
 
   var channels = {};
@@ -80,6 +82,7 @@ _priv.HandshakeManager = function(json_uri, peersManager)
       peersManager.handshakeDisconnected();
     }
   }
+
 
   /**
    * Get a random handshake channel or test for the next one
@@ -113,14 +116,16 @@ _priv.HandshakeManager = function(json_uri, peersManager)
     channel.uid = type;
     channels[type] = channel;
 
-    channel.onopen = function()
+    channel.addEventListener('open', function(event)
     {
       status = 'connected';
 
-      if(self.onopen)
-         self.onopen();
-    };
-    channel.onclose = function()
+      var event = document.createEvent("Event");
+          event.initEvent('open',true,true);
+
+      self.dispatchEvent(event);
+    });
+    channel.addEventListener('close', function(event)
     {
       status = 'connecting';
 
@@ -129,7 +134,7 @@ _priv.HandshakeManager = function(json_uri, peersManager)
 
       // Try to get an alternative handshake channel
       nextHandshake(configuration);
-    };
+    });
   }
 
 
@@ -144,6 +149,7 @@ _priv.HandshakeManager = function(json_uri, peersManager)
 
   // Request the handshake servers configuration file
   var http_request = new XMLHttpRequest();
+
   http_request.open('GET', json_uri);
   http_request.onload = function()
   {
@@ -164,6 +170,7 @@ _priv.HandshakeManager = function(json_uri, peersManager)
            self.onerror('Handshake servers configuration is empty');
       }
     }
+
     else if(self.onerror)
       self.onerror('Unable to fetch handshake servers configuration');
   };

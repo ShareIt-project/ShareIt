@@ -42,8 +42,10 @@ function(configuration)
     send({type: 'presence', from: configuration.uid});
 
     // Notify that the connection to this handshake server is open
-    if(self.onopen)
-       self.onopen();
+    var event = document.createEvent("Event");
+        event.initEvent('open',true,true);
+
+    self.dispatchEvent(event);
   };
 
 

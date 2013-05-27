@@ -18,11 +18,14 @@ var EventTarget = function()
 
 	this.dispatchEvent = function(event)
 	{
-		var listenerArray = listeners[event.type];
+		var listenerArray = (listeners[event.type] || []);
 
-		if(listenerArray !== undefined)
-			for(var i=0, l=listenerArray.length; i<l; i++)
-				listenerArray[i].call(this, event);
+		var dummyListener = this['on' + event.type];
+		if(typeof dummyListener == 'function')
+			listenerArray = listenerArray.concat(dummyListener);
+
+		for(var i=0, l=listenerArray.length; i<l; i++)
+			listenerArray[i].call(this, event);
 	};
 
 	this.removeEventListener = function(type, listener)

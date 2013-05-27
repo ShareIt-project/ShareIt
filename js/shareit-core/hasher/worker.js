@@ -26,6 +26,7 @@ function hashData(data, onsuccess)
 function hashFileentry(fileentry)
 {
   var reader = new FileReader();
+
   reader.onload = function()
   {
     // this.result is the readed file as an ArrayBuffer.

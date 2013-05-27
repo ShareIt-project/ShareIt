@@ -2,32 +2,108 @@ var shareit = (function(module){
 var _priv = module._priv = module._priv || {}
 
 
-/**
- * Addapt a transport layer to be used as a peer
- * @param transport
- * @param {IDBdatabase} db ShareIt! database.
- * @param {FilesManager} filesManager {FilesManager} object.
- */
-_priv.Transport_Peer_init = function(transport, db, filesManager)
+_priv.Transport_Fileslist_init = function(transport, db)
 {
-//  /**
-//   * Check if we already have the file and set it references to our copy
-//   * @param {Fileentry} fileentry {Fileentry} to be checked.
-//   * @param {Array} fileslist List of {Fileentry}s.
-//   */
-//  function check_ifOwned(fileentry, fileslist)
-//  {
-//    // Check if we have the file already, and if so set it our copy
-//    // bitmap and blob reference
-//    for(var j = 0, file_hosted; file_hosted = fileslist[j]; j++)
-//      if(fileentry.hash == file_hosted.hash)
-//      {
-//        fileentry.bitmap = file_hosted.bitmap;
-//        fileentry.blob = file_hosted.file || file_hosted.blob;
-//
-//        break;
-//      }
-//  }
+  // Host
+
+  function generateFileObject(fileentry)
+  {
+    var path = '';
+    if(fileentry.sharedpoint)
+    {
+      path += fileentry.sharedpoint;
+      if(fileentry.path != '')
+        path += '/' + fileentry.path;
+    }
+    var name = fileentry.file ? fileentry.file.name : fileentry.name
+    var blob = fileentry.file || fileentry.blob || fileentry;
+
+    var result =
+    {
+      path: path,
+      name: name,
+
+      hash: fileentry.hash,
+      size: blob.size,
+      type: blob.type
+    };
+
+    // Dropbox plugin start
+    if(fileentry.dropbox)
+      result.dropbox = fileentry.dropbox;
+    // Dropbox plugin end
+
+    return result;
+  }
+
+  /**
+   * Addapt and send to the other peer our list of shared files
+   * @param {Array} fileslist Our list of {Fileentry}s.
+   */
+  transport._send_files_list = function(fileslist)
+  {
+    var files_send = [];
+
+    for(var i = 0, fileentry; fileentry = fileslist[i]; i++)
+      files_send.push(generateFileObject(fileentry));
+
+    transport.emit('fileslist.send', files_send);
+  };
+
+
+  var send_updates = false;
+
+  /**
+   * Notify to the other peer that we have added a new file
+   * @param {Fileentry} fileentry {Fileentry} of the new added file.
+   */
+  transport._send_file_added = function(fileentry)
+  {
+    if(send_updates)
+      transport.emit('fileslist.added', generateFileObject(fileentry));
+  };
+
+  /**
+     * Notify to the other peer that we have deleted a new file
+     * @param {Fileentry} fileentry {Fileentry} of the deleted file.
+     */
+  transport._send_file_deleted = function(fileentry)
+  {
+    if(send_updates)
+      transport.emit('fileslist.deleted', fileentry.hash);
+  };
+
+  var SEND_UPDATES = 1;
+
+  /**
+   * Catch request for our files list
+   */
+  transport.addEventListener('fileslist.query', function(event)
+  {
+    var flags = event.data[0];
+
+    db.files_getAll(null, function(error, fileslist)
+    {
+      if(error)
+        console.error(error)
+
+      else
+        transport._send_files_list(fileslist)
+    });
+
+    send_updates = flags & SEND_UPDATES;
+  });
+
+  /**
+   * Catch request to disable sending our files list updates
+   */
+  transport.addEventListener('fileslist.disableUpdates', function(event)
+  {
+    send_updates = false;
+  });
+
+
+  // Peer
 
   /**
    * Catch new sended data for the other peer fileslist
@@ -82,11 +158,11 @@ _priv.Transport_Peer_init = function(transport, db, filesManager)
 
       // Notify about fileslist update
       var event = document.createEvent("Event");
-          event.initEvent('fileslist.updated',true,true);
+          event.initEvent('fileslist._send',true,true);
           event.fileslist = fileentries
           event.uid = transport.uid
 
-      filesManager.dispatchEvent(event);
+      transport.dispatchEvent(event);
     })
   });
 
@@ -108,6 +184,7 @@ _priv.Transport_Peer_init = function(transport, db, filesManager)
 
 
   // fileslist updates
+
   /**
    * Catch when the other peer has added a new file
    */
@@ -127,11 +204,11 @@ _priv.Transport_Peer_init = function(transport, db, filesManager)
       {
         // Notify about fileslist update
         var event = document.createEvent("Event");
-            event.initEvent('fileslist.updated',true,true);
+            event.initEvent('fileslist._added',true,true);
             event.fileslist = fileslist
             event.uid = transport.uid
 
-        filesManager.dispatchEvent(event);
+        transport.dispatchEvent(event);
       })
     })
   });
@@ -144,69 +221,21 @@ _priv.Transport_Peer_init = function(transport, db, filesManager)
     var fileentry = event.data[0];
         fileentry.peer = transport.uid
 
-    // Remove the fileentry for the fileslist
+    // Remove the fileentry from the fileslist
     db.files_delete(fileentry, function(error)
     {
       db.files_getAll_byPeer(transport.uid, function(error, fileslist)
       {
         // Notify about fileslist update
         var event = document.createEvent("Event");
-            event.initEvent('fileslist.updated',true,true);
+            event.initEvent('fileslist._deleted',true,true);
             event.fileslist = fileslist
             event.uid = transport.uid
 
-        filesManager.dispatchEvent(event);
+        transport.dispatchEvent(event);
       })
     })
   });
-
-
-  // transfer
-  /**
-   * Catch new sended data for a file
-   */
-  transport.addEventListener('transfer.send', function(event)
-  {
-    var hash  = event.data[0];
-    var chunk = parseInt(event.data[1]);
-    var data  = event.data[2];
-
-    // Fix back data transmited as UTF-8 to binary
-    var byteArray = new Uint8Array(data.length);
-    for (var i = 0; i < data.length; i++)
-      byteArray[i] = data.charCodeAt(i) & 0xff;
-
-    data = byteArray;
-
-    db.files_getAll_byHash(hash, function(error, fileentries)
-    {
-      if(error)
-        console.error(error)
-
-      else if(fileentries.length)
-      {
-        for(var i=0, fileentry; fileentry=fileentries[i]; i++)
-          if(fileentry.blob)
-          {
-            filesManager.updateFile(fileentry, chunk, data);
-            return
-          }
-      }
-
-      else
-        console.warn("We are not downloading file "+hash)
-    });
-  });
-
-  /**
-     * Request (more) data for a file
-     * @param {Fileentry} Fileentry of the file to be requested.
-     * @param {Number} chunk Chunk of the file to be requested.
-     */
-  transport.transfer_query = function(fileentry, chunk)
-  {
-    transport.emit('transfer.query', fileentry.hash, chunk);
-  };
 }
 
 return module

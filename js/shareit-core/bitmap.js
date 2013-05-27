@@ -20,9 +20,10 @@ module.Bitmap = function(length)
     var array = [];
 
     for(var i = 0; i < this.prototype.length; i++)
-      if(this.prototype.get(i) == setted) array.push(i);
+      if(this.prototype.get(i) == setted)
+        array.push(i);
 
-      return array;
+    return array;
   };
 
   /**

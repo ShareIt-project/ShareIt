@@ -25,7 +25,7 @@ _priv.CacheBackup = function(db, filesManager)
       // corresponding folder and generate the JSON metadata file
       var files = [];
 
-      for(var i = 0, fileentry; fileentry = fileslist[i]; i++)
+      for(var i=0, fileentry; fileentry=fileslist[i]; i++)
         if(fileentry.blob)
         {
           // Store blob on Zip file
@@ -65,7 +65,7 @@ _priv.CacheBackup = function(db, filesManager)
           fs.exportBlob(onfinish, onprogress, onerror);
         }
 
-      // Cache has no files
+        // Cache has no files
         else if(onfinish)
           onfinish();
     });
@@ -79,7 +79,8 @@ _priv.CacheBackup = function(db, filesManager)
       // Check blobs metadata
       var files = fs.root.getChildByName('files.json');
 
-      files.getText(function(text) {
+      files.getText(function(text)
+      {
         // Get blobs folder from the zip file
         var blobs = fs.root.getChildByName('blobs');
 
@@ -177,7 +178,7 @@ _priv.CacheBackup = function(db, filesManager)
                   fileentry_update(file, fileentry);
             }
 
-          // Fileentry don't exists on cache, add it
+            // Fileentry don't exists on cache, add it
             else
               fileentry_add(file);
           });

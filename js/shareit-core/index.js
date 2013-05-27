@@ -69,6 +69,6 @@ shareit.load(
  'sharedpoints/mega',
 
  'transport/index',
- 'transport/host',
- 'transport/peer',
+ 'transport/fileslist',
+ 'transport/transfer',
  'transport/search']);

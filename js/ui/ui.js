@@ -67,6 +67,20 @@ module.UI = function(shareit)
     $('#UID-home, #UID-about').val(uid);
 
 
+    // Prompt UID
+    var promptUID = new _priv.PromptUID('dialog-prompt', function(uid)
+    {
+      // Create connection with the other peer
+      shareit.connectTo(uid, null, function(error, channel)
+      {
+        if(error)
+          alert(error);
+        else
+          tabsMain.openOrCreate('peer', uid);
+      });
+    })
+
+
     /**
      * User initiated process to connect to a remote peer asking for the UID
      */
@@ -77,18 +91,7 @@ module.UI = function(shareit)
 //        $('tools-menu-submenu').popup('close');
 
       // Ask for the peer UID and connect to it
-      var uid = prompt('UID to connect');
-      if(uid != null && uid != '')
-      {
-        // Create connection with the other peer
-        shareit.connectTo(uid, null, function(error, channel)
-        {
-          if(error)
-            console.error(error);
-          else
-            tabsMain.openOrCreate('peer', uid);
-        });
-      }
+      promptUID.open();
     }
 
     $('#ConnectUser').unbind('click');
@@ -99,6 +102,9 @@ module.UI = function(shareit)
   });
 
 
+  /**
+   * User initiated process to connect to a remote peer asking for the UID
+   */
   function ConnectUser()
   {
     alert("There's no routing available, wait some more seconds");
@@ -115,7 +121,17 @@ module.UI = function(shareit)
       var query = $(this).val()
       if(query)
       {
-        tabsMain.openOrCreate('search', query);
+        function isUUID(str)
+        {
+          var rgx = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/
+          return rgx.test(str)
+        }
+
+        if(isUUID(query))
+          tabsMain.openOrCreate('hash', query);
+        else
+          tabsMain.openOrCreate('search', query);
+
         $(this).val("")
       }
     }

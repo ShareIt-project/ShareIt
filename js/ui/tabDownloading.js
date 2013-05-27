@@ -16,15 +16,15 @@ _priv.TabDownloading = function(tableId, preferencesDialogOpen)
     cell.appendChild(document.createTextNode('There are no downloads, '));
 
     var anchor = document.createElement('A');
-    anchor.id = 'ConnectUser';
-    anchor.style.cursor = 'pointer';
+        anchor.id = 'ConnectUser';
+        anchor.style.cursor = 'pointer';
     cell.appendChild(anchor);
 
     $(anchor).click(preferencesDialogOpen);
 
     var span = document.createElement('SPAN');
-    span.setAttribute('class', 'user');
-    span.appendChild(document.createTextNode('Connect to a user'));
+        span.setAttribute('class', 'user');
+        span.appendChild(document.createTextNode('Connect to a user'));
     anchor.appendChild(span);
 
     cell.appendChild(document.createTextNode(' and get one!'));
@@ -50,24 +50,24 @@ _priv.TabDownloading = function(tableId, preferencesDialogOpen)
 
     // Type
     var td = document.createElement('TD');
-    td.appendChild(document.createTextNode(fileentry.type));
+        td.appendChild(document.createTextNode(fileentry.type));
     tr.appendChild(td);
 
     // Size
     var td = document.createElement('TD');
-    td.className = 'filesize';
-    td.appendChild(document.createTextNode(humanize.filesize(fileentry.size)));
+        td.className = 'filesize';
+        td.appendChild(document.createTextNode(humanize.filesize(fileentry.size)));
     tr.appendChild(td);
 
     // Downloaded
     var td = document.createElement('TD');
-    td.className = 'filesize';
-    td.appendChild(document.createTextNode(humanize.filesize(0)));
+        td.className = 'filesize';
+        td.appendChild(document.createTextNode(humanize.filesize(0)));
     tr.appendChild(td);
 
     // Progress
     var td_progress = document.createElement('TD');
-    td_progress.appendChild(document.createTextNode('0%'));
+        td_progress.appendChild(document.createTextNode('0%'));
 
     $(self).on(fileentry.hash, function(event, value)
     {
@@ -82,51 +82,58 @@ _priv.TabDownloading = function(tableId, preferencesDialogOpen)
 
     // Status
     var td = document.createElement('TD');
-    td.appendChild(document.createTextNode('Paused'));
+        td.appendChild(document.createTextNode('Paused'));
     tr.appendChild(td);
 
     // Time remaining
     var td = document.createElement('TD');
-    td.appendChild(document.createTextNode('Unknown'));
+        td.appendChild(document.createTextNode('Unknown'));
     tr.appendChild(td);
 
     // Speed
     var td = document.createElement('TD');
-    td.className = 'filesize';
-    td.appendChild(document.createTextNode(humanize.filesize(0) + '/s'));
+        td.className = 'filesize';
+        td.appendChild(document.createTextNode(humanize.filesize(0) + '/s'));
     tr.appendChild(td);
 
     // Peers
     var td = document.createElement('TD');
-    td.appendChild(document.createTextNode('0'));
+        td.appendChild(document.createTextNode('0'));
     tr.appendChild(td);
 
     // Inclusion date
     var td = document.createElement('TD');
-    td.class = 'end';
-    td.appendChild(document.createTextNode('0-0-0000'));
+        td.class = 'end';
+        td.appendChild(document.createTextNode('0-0-0000'));
     tr.appendChild(td);
 
     return tr;
   }
 
-  this.updateFiles = function(fileslist) {
-    for (var i = 0, fileentry; fileentry = fileslist[i]; i++) {
+  this.updateFiles = function(fileslist)
+  {
+    for(var i=0, fileentry; fileentry=fileslist[i]; i++)
+    {
       // Calc path
       var path = '';
-      if (fileentry.sharedpoint) path += fileentry.sharedpoint + '/';
-      if (fileentry.path) path += fileentry.path + '/';
+      if(fileentry.sharedpoint)
+        path += fileentry.sharedpoint + '/';
+      if(fileentry.path)
+        path += fileentry.path + '/';
 
       var name = '';
-      if (fileentry.file) name = fileentry.file.name;
-      else name = fileentry.name;
+      if(fileentry.file)
+        name = fileentry.file.name;
+      else
+        name = fileentry.name;
 
       var child = path.split('/').slice(0, -1).join('/').replace(' ', '');
 
       // Add file row
       var tr = rowFactory(fileentry);
 //          tr.id = path + name
-      if (child) tr.setAttribute('class', 'child-of-' + child);
+      if(child)
+        tr.setAttribute('class', 'child-of-' + child);
 
       this.tbody.appendChild(tr);
     }
@@ -138,7 +145,7 @@ _priv.TabDownloading = function(tableId, preferencesDialogOpen)
     // Enable the tab if at least one file is being downloaded. This will
     // only happen the first time, others the tab will be already enabled
     // and the no files shared content will be shown.
-    if (fileslist.length)
+    if(fileslist.length)
     {
       $('#tabs').tabs('enable', 0);
       $('#tabs').tabs('option', 'collapsible', false);

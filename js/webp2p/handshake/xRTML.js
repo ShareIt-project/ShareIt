@@ -50,8 +50,10 @@ function(configuration)
                 }
 
                 // Set handshake as open
-                if(self.onopen)
-                    self.onopen(configuration.uuid)
+                var event = document.createEvent("Event");
+                    event.initEvent('open',true,true);
+
+                self.dispatchEvent(event);
             },
 
             error: function(error)

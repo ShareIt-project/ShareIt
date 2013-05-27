@@ -23,6 +23,13 @@
     width: 100%
 }
 
+#dialog-compatibility #icon
+{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 #fork_me {
     border: none;
     position: fixed; 

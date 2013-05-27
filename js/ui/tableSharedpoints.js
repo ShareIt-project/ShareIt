@@ -20,7 +20,7 @@ _priv.TableSharedpoints = function(tableId, onclickFactory)
     cell.appendChild(document.createTextNode('There are no shared points. '));
 
     var anchor = document.createElement('A');
-    anchor.style.cursor = 'pointer';
+        anchor.style.cursor = 'pointer';
     cell.appendChild(anchor);
 
     $(anchor).click(function()
@@ -29,8 +29,8 @@ _priv.TableSharedpoints = function(tableId, onclickFactory)
     });
 
     var span = document.createElement('SPAN');
-    span.setAttribute('class', 'add-sharedpoint');
-    span.appendChild(document.createTextNode('Please add some folders'));
+        span.setAttribute('class', 'add-sharedpoint');
+        span.appendChild(document.createTextNode('Please add some folders'));
     anchor.appendChild(span);
 
     cell.appendChild(document.createTextNode(' to be shared.'));
@@ -50,23 +50,23 @@ _priv.TableSharedpoints = function(tableId, onclickFactory)
 
     // Name & icon
     var span = document.createElement('SPAN');
-    span.className = fileentry.type;
-    span.appendChild(document.createTextNode(fileentry.name));
+        span.className = fileentry.type;
+        span.appendChild(document.createTextNode(fileentry.name));
     td.appendChild(span);
 
     // Shared size
     var td = document.createElement('TD');
-    td.className = 'filesize';
-    td.appendChild(document.createTextNode(humanize.filesize(fileentry.size)));
+        td.className = 'filesize';
+        td.appendChild(document.createTextNode(humanize.filesize(fileentry.size)));
     tr.appendChild(td);
 
     var td = document.createElement('TD');
-    td.class = 'end';
+        td.class = 'end';
     tr.appendChild(td);
 
     var a = document.createElement('A');
-    a.onclick = onclickFactory(fileentry);
-    a.appendChild(document.createTextNode('Delete'));
+        a.onclick = onclickFactory(fileentry);
+        a.appendChild(document.createTextNode('Delete'));
     td.appendChild(a);
 
     return tr;
@@ -74,7 +74,7 @@ _priv.TableSharedpoints = function(tableId, onclickFactory)
 
   this.updateFiles = function(fileslist)
   {
-    for(var i = 0, fileentry; fileentry = fileslist[i]; i++)
+    for(var i=0, fileentry; fileentry=fileslist[i]; i++)
     {
       // Calc path
       var path = '';

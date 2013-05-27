@@ -56,7 +56,6 @@ _priv.Hasher = function(db, policy, sharedpointsManager)
     /**
      * Add file to the database
      */
-
     function addFile(fileentry)
     {
       fileentry.peer = ""  // File is shared by us
@@ -175,13 +174,13 @@ _priv.Hasher = function(db, policy, sharedpointsManager)
          */
         function sharedpoint_exist(name)
         {
-          for(var i = 0; i < sharedpoints.length; i++)
+          for(var i=0; i<sharedpoints.length; i++)
             if(sharedpoints[i].name == name)
               return true;
         }
 
         // Remove all unaccesible files
-        for(var i = 0, fileentry; fileentry = fileentries[i]; i++)
+        for(var i=0, fileentry; fileentry=fileentries[i]; i++)
           if(fileentry.sharedpoint)
           {
             // Sharedpoint was removed, remove the file from database

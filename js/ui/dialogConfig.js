@@ -5,7 +5,7 @@ _priv.DialogConfig = function(dialogId, options, shareit)
 {
   var self = this;
 
-  var dialog = $('#' + dialogId);
+  var dialog = $('#'+dialogId);
 
   if(!$.mobile)
     dialog.dialog(options);
@@ -33,6 +33,7 @@ _priv.DialogConfig = function(dialogId, options, shareit)
 
 
   // Sharedpoints tab
+
   // Sharedpoints table
   var tableSharedpoints = new _priv.TableSharedpoints('Sharedpoints',
   function(fileentry)
@@ -125,6 +126,7 @@ _priv.DialogConfig = function(dialogId, options, shareit)
   };
 
   // Backup tab
+
   // Export
   dialog.find('#Export').click(function()
   {

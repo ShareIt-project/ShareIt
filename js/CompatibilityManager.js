@@ -2,7 +2,6 @@
  * @classdesc Show an alert about the compatibility issues of the webapp
  * @constructor
  */
-
 function CompatibilityManager()
 {
   var errors;
@@ -21,12 +20,12 @@ function CompatibilityManager()
   };
 
   /**
-     * Add a warning to the list of compatibility issues. This is mainly
-     * intended for issues that would not allow to the webapp to work optimaly,
-     * maybe using a polyfill or having some functionality disabled.
-     * @param {String} component Name of the component that has the issue.
-     * @param {String} msg Message to show to the user about the issue.
-     */
+   * Add a warning to the list of compatibility issues. This is mainly
+   * intended for issues that would not allow to the webapp to work optimaly,
+   * maybe using a polyfill or having some functionality disabled.
+   * @param {String} component Name of the component that has the issue.
+   * @param {String} msg Message to show to the user about the issue.
+   */
   this.addWarning = function(component, msg)
   {
     warnings = warnings || {};
@@ -34,11 +33,11 @@ function CompatibilityManager()
   };
 
   /**
-     * Show the alert to the user after all the issues have been collected.
-     * It will be shown the first time the webapp is used on a browser, there're
-     * error-cataloged issues or compatibility status has changed (mainly after
-     * a browser update).
-     */
+   * Show the alert to the user after all the issues have been collected.
+   * It will be shown the first time the webapp is used on a browser, there're
+   * error-cataloged issues or compatibility status has changed (mainly after
+   * a browser update).
+   */
   this.show = function()
   {
     var msg = '<p>ShareIt! will not work ';
@@ -80,24 +79,27 @@ function CompatibilityManager()
     function showDialog(icon, msg)
     {
       var alert = $('#dialog-compatibility');
-      alert.find('#icon')[0].src = icon;
-      alert.find('#msg').html(msg);
+          alert.find('#icon')[0].src = icon;
+          alert.find('#msg').html(msg);
 
-      alert.dialog(
-      {
-        modal: true,
-        resizable: false,
-        width: 800,
-
-        buttons:
+      if($.mobile)
+        $.mobile.changePage(alert);
+      else
+        alert.dialog(
         {
-          Ok: function()
+          modal: true,
+          resizable: false,
+          width: 800,
+
+          buttons:
           {
-            $(this).remove();
-//            $(this).dialog("destroy");
+            Ok: function()
+            {
+              $(this).remove();
+//              $(this).dialog("destroy");
+            }
           }
-        }
-      });
+        });
     }
 
     // Browser is not fully compatible, show why if compatibility changed
@@ -112,7 +114,8 @@ function CompatibilityManager()
       newCompatibility = JSON.stringify(newCompatibility);
 
       // Check if compatibility status has changed and notify to user
-      if(errors || localStorage.compatibility != newCompatibility)
+      if(errors
+      || localStorage.compatibility != newCompatibility)
       {
         msg += '<p>Please upgrade to the latest version of Chrome/Chromium or Firefox.</p>';
 
@@ -122,7 +125,7 @@ function CompatibilityManager()
       }
     }
 
-  // Browser have been upgraded and now it's fully compatible
+    // Browser have been upgraded and now it's fully compatible
     else if(localStorage.compatibility)
     {
       showDialog('images/smiley-happy.svg',

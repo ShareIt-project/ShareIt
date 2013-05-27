@@ -330,12 +330,38 @@
       </a>
     </div>
 
-    <div id="dialog-compatibility" title="Compatibility issues">
-      <img id="icon" style="float: left" height="250px"/>
+    <div id="dialog-compatibility" title="Compatibility issues" data-role="dialog">
+      <div class="only-mobile" data-role="header" data-position="fixed">
+        <h1>Compatibility issues</h1>
+      </div>
+
+      <img id="icon" height="250px"/>
       <div id="msg"></div>
+
+      <a data-rel="back" class="only-mobile" data-role="button">Ok</a>
     </div>
 
-    <div id="dialog-policy" title="Usage policy"></div>
+    <div id="dialog-policy" title="Usage policy" data-role="dialog">
+      <div class="only-mobile" data-role="header" data-position="fixed">
+        <h1>Usage policy</h1>
+      </div>
+
+      <div id="msg"></div>
+
+      <a id="Accept" class="only-mobile" data-role="button" data-theme="b">Accept</a>
+      <a id="Cancel" class="only-mobile" data-role="button">Cancel</a>
+    </div>
+
+    <div id="dialog-prompt" title="UID to connect" data-role="dialog">
+      <div class="only-mobile" data-role="header" data-position="fixed">
+        <h1>UID to connect</h1>
+      </div>
+
+      <input type=search results=5 name=s>
+
+      <button id="Accept" class="only-mobile" data-role="button" data-theme="b">Accept</button>
+      <button id="Cancel" class="only-mobile" data-role="button">Cancel</button>
+    </div>
 
   </body>
 </html>

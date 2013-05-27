@@ -153,6 +153,11 @@ span.about {
     display: none;
 }
 
+#dialog-compatibility #icon
+{
+    float: left;
+}
+
 #dialog-config
 {
     display: none;

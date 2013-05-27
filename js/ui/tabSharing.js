@@ -17,15 +17,15 @@ _priv.TabSharing = function(tableId, preferencesDialogOpen)
                                              'please add a shared point on the '));
 
     var anchor = document.createElement('A');
-    anchor.id = 'Preferences';
-    anchor.style.cursor = 'pointer';
+        anchor.id = 'Preferences';
+        anchor.style.cursor = 'pointer';
     cell.appendChild(anchor);
 
     $(anchor).click(preferencesDialogOpen);
 
     var span = document.createElement('SPAN');
-    span.setAttribute('class', 'preferences');
-    span.appendChild(document.createTextNode('preferences'));
+        span.setAttribute('class', 'preferences');
+        span.appendChild(document.createTextNode('preferences'));
     anchor.appendChild(span);
 
     cell.appendChild(document.createTextNode('.'));

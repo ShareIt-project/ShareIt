@@ -82,10 +82,8 @@ _priv.filetype2className = function(filetype)
 
   switch(filetype[0])
   {
-    case 'image':
-      return 'image';
-    case 'video':
-      return 'video';
+    case 'image': return 'image';
+    case 'video': return 'video';
   }
 
   // Unknown file type, return generic file
@@ -96,8 +94,8 @@ _priv.spanedCell = function(table)
 //Creates a cell that span over all the columns of a table
 {
   var td = document.createElement('TD');
-  td.colSpan = table.getElementsByTagName('thead')[0].rows[0].cells.length;
-  td.align = 'center';
+      td.colSpan = table.getElementsByTagName('thead')[0].rows[0].cells.length;
+      td.align = 'center';
 
   return td;
 }
@@ -185,7 +183,7 @@ _priv.FilesTable =
     else
     {
       var tr = document.createElement('TR');
-      tr.appendChild(this.noFilesCaption);
+          tr.appendChild(this.noFilesCaption);
 
       this.tbody.appendChild(tr);
     }

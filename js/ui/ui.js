@@ -121,7 +121,17 @@ module.UI = function(shareit)
       var query = $(this).val()
       if(query)
       {
-        tabsMain.openOrCreate('search', query);
+        function isUUID(str)
+        {
+          var rgx = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/
+          return rgx.test(str)
+        }
+
+        if(isUUID(query))
+          tabsMain.openOrCreate('hash', query);
+        else
+          tabsMain.openOrCreate('search', query);
+
         $(this).val("")
       }
     }

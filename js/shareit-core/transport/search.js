@@ -3,6 +3,8 @@ var _priv = module._priv = module._priv || {}
 
 _priv.Transport_Search_init = function(transport, db, peersManager)
 {
+  EventTarget.call(this);
+
   transport.search = function(text)
   {
 

@@ -60,7 +60,7 @@ module.UI = function(shareit)
                                     dialogConfig.preferencesDialogOpen);
 
   // Set UID on user interface
-  shareit.addEventListener('uid', function(event)
+  shareit.addEventListener('handshake.open', function(event)
   {
     var uid = event.uid;
 

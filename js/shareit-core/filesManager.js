@@ -81,10 +81,12 @@ _priv.FilesManager = function(db, peersManager)
     {
       console.log('Created datachannel with peer ' + channel.uid);
 
+      EventTarget.call(channel);
+
       _priv.Transport_init(channel);
-      _priv.Transport_Host_init(channel, db);
-      _priv.Transport_Peer_init(channel, db, self);
-//    _priv.Transport_Search_init(channel, db, self);
+      _priv.Transport_Fileslist_init(channel, db);
+//    _priv.Transport_Search_init(channel, db);
+      _priv.Transport_Transfer_init(channel, db);
 
       self.addEventListener('file.added', function(event)
       {
@@ -97,6 +99,29 @@ _priv.FilesManager = function(db, peersManager)
         var fileentry = event.fileentry;
 
         channel._send_file_deleted(fileentry);
+      });
+
+      function fileslist_updated(event)
+      {
+        var event2 = document.createEvent("Event");
+            event2.initEvent('fileslist.updated',true,true);
+            event2.fileslist = event.fileslist
+            event2.uid = event.uid
+
+        self.dispatchEvent(event2);
+      }
+
+      channel.addEventListener('fileslist._send', fileslist_updated);
+      channel.addEventListener('fileslist._added', fileslist_updated);
+      channel.addEventListener('fileslist._deleted', fileslist_updated);
+
+      channel.addEventListener('transfer._send', function(event)
+      {
+        var fileentry = event.fileentry
+        var chunk     = event.chunk
+        var data      = event.data
+
+        self.updateFile(fileentry, chunk, data);
       });
 
       // Quick hack for search

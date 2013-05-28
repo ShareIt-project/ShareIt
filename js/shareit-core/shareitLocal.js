@@ -128,7 +128,25 @@ module.Local = function(handshake_servers_file, onsuccess)
 
 
     peersManager.addEventListener('error.noPeers', forwardEvent);
-    peersManager.addEventListener('uid',           forwardEvent);
+    peersManager.addEventListener('handshake.open', function(event)
+    {
+//      // Restart downloads
+//      db.files_getAll(null, function(error, filelist)
+//      {
+//        if(error)
+//          console.error(error)
+//
+//        else if(filelist.length)
+//          policy(function()
+//          {
+//            for(var i=0, fileentry; fileentry=filelist[i]; i++)
+//              if(fileentry.bitmap)
+//                self.transfer_query(fileentry)
+//          })
+//      })
+
+      self.dispatchEvent(event);
+    });
 
     filesManager.addEventListener('file.added',   forwardEvent);
     filesManager.addEventListener('file.deleted', forwardEvent);

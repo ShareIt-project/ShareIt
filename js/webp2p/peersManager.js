@@ -74,7 +74,7 @@ module.PeersManager = function(handshake_servers_file, stun_server)
     }
 
     if(cb)
-      peer.onerror = function(event)
+      pc.onerror = function(event)
       {
         cb({uid: uid, peer:peer});
       };

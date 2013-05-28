@@ -77,7 +77,10 @@ module.Local = function(handshake_servers_file, onsuccess)
 
     self.fileslist_query = function(uid, flags, callback)
     {
-      peersManager.getChannels()[uid].fileslist_query(flags)
+      var channels = peersManager.getChannels()
+      var channel = channels[uid]
+
+      channel.fileslist_query(flags)
     }
 
     self.numPeers = function(callback)

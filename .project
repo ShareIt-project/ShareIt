@@ -3,6 +3,8 @@
 	<name>ShareIt</name>
 	<comment></comment>
 	<projects>
+		<project>jquery-treetable</project>
+		<project>WebP2P.io</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

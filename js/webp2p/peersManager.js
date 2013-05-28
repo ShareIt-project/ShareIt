@@ -95,12 +95,12 @@ module.PeersManager = function(handshake_servers_file, stun_server)
 
     _priv.Transport_Routing_init(channel, self);
 
-    channel.onclose = function()
+    channel.addEventListener('close', function(event)
     {
       delete pc._channel;
 
       pc.close();
-    };
+    });
 
     var event = document.createEvent("Event");
         event.initEvent('datachannel',true,true);

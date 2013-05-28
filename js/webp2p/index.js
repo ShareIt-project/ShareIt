@@ -49,6 +49,7 @@ webp2p.load(
  'handshake/simpleSignaling',
  'handshake/XMPP',
 
+ 'lib/reliable.min',
  'lib/datachannel',
  'lib/EventTarget',
  'lib/jsjac',

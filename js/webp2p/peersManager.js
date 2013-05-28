@@ -83,11 +83,11 @@ module.PeersManager = function(handshake_servers_file, stun_server)
   }
 
   /**
-   * Initialize a {RTCDataChannel}
+   * Initialize a {RTCDataChannel} when gets open and notify it
    * @param {RTCPeerConnection} pc PeerConnection owner of the DataChannel.
    * @param {RTCDataChannel} channel Communication channel with the other peer.
    */
-  function initDataChannel(pc, channel, uid, cb)
+  function initDataChannel(pc, channel, uid)
   {
     channel.uid = uid;
 
@@ -107,18 +107,6 @@ module.PeersManager = function(handshake_servers_file, stun_server)
         event.channel = channel
 
     self.dispatchEvent(event);
-
-    if(cb)
-    {
-      channel.addEventListener('open', function(event)
-      {
-        cb(null, uid);
-      });
-      channel.onerror = function(event)
-      {
-        cb({uid: uid, peer:pc, channel:channel});
-      };
-    }
   }
 
 
@@ -237,7 +225,22 @@ module.PeersManager = function(handshake_servers_file, stun_server)
       peer = createPeerConnection(uid, incomingChannel, cb);
 
       var channel = peer.createDataChannel('webp2p');
-      initDataChannel(peer, channel, uid, cb);
+          channel.addEventListener('open', function(event)
+          {
+            initDataChannel(peer, event.channel, uid);
+          });
+
+      if(cb)
+      {
+        channel.addEventListener('open', function(event)
+        {
+          cb(null, uid);
+        });
+        channel.onerror = function(event)
+        {
+          cb({uid: uid, peer:pc, channel:channel});
+        };
+      }
 
       // Send offer to new PeerConnection
       peer.createOffer(function(offer)

@@ -60,6 +60,11 @@ module.Local = function(handshake_servers_file, onsuccess)
       filesManager.files_downloading(callback)
     }
 
+    self.files_getAll_byHash = function(hash, callback)
+    {
+      db.files_getAll_byHash(hash, callback)
+    }
+
     self.files_sharing = function(callback)
     {
       filesManager.files_sharing(callback)

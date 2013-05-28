@@ -197,6 +197,25 @@ _priv.TabsMain = function(tabsId, shareit, preferencesDialogOpen)
     }
   }
 
+  function createHash(tabPanelId, query)
+  {
+    // Tab
+    createTab(tabPanelId, 'Hash: ' + query)
+
+    // Tab panel
+    var tabHash = new _priv.TabHash(query, tabsId, beginTransfer)
+
+    shareit.files_getAll_byHash(query, function(error, fileslist)
+    {
+      if(error)
+        console.error(error)
+      else
+        tabHash.update(fileslist)
+    })
+
+    return tabHash
+  }
+
   function createPeer(tabPanelId, uid)
   {
     // Tab
@@ -272,6 +291,10 @@ _priv.TabsMain = function(tabsId, shareit, preferencesDialogOpen)
 
       switch(type)
       {
+        case 'hash':
+          tab = createHash(tabPanelId, data)
+          break
+
         case 'peer':
           tab = createPeer(tabPanelId, data)
           break

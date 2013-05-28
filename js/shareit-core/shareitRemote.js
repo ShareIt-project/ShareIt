@@ -92,6 +92,11 @@ module.Remote = function(channel, onsuccess)
     call('files_downloading', incomingChannel, callback)
   }
 
+  this.files_getAll_byHash = function(hash, callback)
+  {
+    call('files_getAll_byHash', hash, callback)
+  }
+
   this.files_sharing = function(callback)
   {
     call('files_sharing', callback)

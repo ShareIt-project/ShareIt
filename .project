@@ -3,8 +3,15 @@
 	<name>ShareIt</name>
 	<comment></comment>
 	<projects>
+		<project>jquery-treetable</project>
+		<project>WebP2P.io</project>
 	</projects>
 	<buildSpec>
+		<buildCommand>
+			<name>org.python.pydev.PyDevBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 		<buildCommand>
 			<name>dk.olav.mascaraplugin.mascaraBuilder</name>
 			<arguments>
@@ -13,5 +20,6 @@
 	</buildSpec>
 	<natures>
 		<nature>dk.olav.mascaraplugin.mascaraNature</nature>
+		<nature>org.python.pydev.pythonNature</nature>
 	</natures>
 </projectDescription>

@@ -50,9 +50,9 @@ module.Local = function(handshake_servers_file, onsuccess)
      * @param {Function} cb Callback.
      * send the offer. If not defined send it to all connected peers.
      */
-    self.connectTo = function(uid, incomingChannel, callback)
+    self.connectTo = function(uid, labels, incomingChannel, callback)
     {
-      peersManager.connectTo(uid, incomingChannel, callback)
+      peersManager.connectTo(uid, labels, incomingChannel, callback)
     }
 
     self.files_downloading = function(callback)

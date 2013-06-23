@@ -82,9 +82,9 @@ module.Remote = function(channel, onsuccess)
      * @param {Function} cb Callback.
    * send the offer. If not defined send it to all connected peers.
    */
-  this.connectTo = function(uid, incomingChannel, callback)
+  this.connectTo = function(uid, labels, incomingChannel, callback)
   {
-    call('connectTo', uid, incomingChannel, callback)
+    call('connectTo', uid, labels, incomingChannel, callback)
   }
 
   this.files_downloading = function(callback)

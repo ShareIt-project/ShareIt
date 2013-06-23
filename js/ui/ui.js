@@ -71,10 +71,11 @@ module.UI = function(shareit)
     var promptUID = new _priv.PromptUID('dialog-prompt', function(uid)
     {
       // Create connection with the other peer
-      shareit.connectTo(uid, null, function(error, channel)
+      shareit.connectTo(uid, ['shareit'], null, function(error, channel)
       {
         if(error)
           alert(error);
+
         else
           tabsMain.openOrCreate('peer', uid);
       });

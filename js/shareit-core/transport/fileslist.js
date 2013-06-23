@@ -2,7 +2,7 @@ var shareit = (function(module){
 var _priv = module._priv = module._priv || {}
 
 
-_priv.Transport_Fileslist_init = function(transport, db)
+_priv.Transport_Fileslist_init = function(transport, db, peer_uid)
 {
   // Host
 
@@ -113,7 +113,7 @@ _priv.Transport_Fileslist_init = function(transport, db)
     var fileentries = event.data[0];
 
     // Update the fileslist for this peer
-    db.files_getAll_byPeer(transport.uid, function(error, fileslist)
+    db.files_getAll_byPeer(peer_uid, function(error, fileslist)
     {
       // Remove old peer fileslist
       for(var i = 0, fileentry; fileentry = fileslist[i]; i++)
@@ -128,7 +128,7 @@ _priv.Transport_Fileslist_init = function(transport, db)
       // Set new fileslist for this peer
       for(var i = 0, fileentry; fileentry = fileentries[i]; i++)
       {
-        fileentry.peer = transport.uid
+        fileentry.peer = peer_uid
         fileentry.sharedpoint = ""
 
         db.files_put(fileentry)
@@ -160,7 +160,7 @@ _priv.Transport_Fileslist_init = function(transport, db)
       var event = document.createEvent("Event");
           event.initEvent('fileslist._send',true,true);
           event.fileslist = fileentries
-          event.uid = transport.uid
+          event.uid = peer_uid
 
       transport.dispatchEvent(event);
     })
@@ -191,7 +191,7 @@ _priv.Transport_Fileslist_init = function(transport, db)
   transport.addEventListener('fileslist.added', function(event)
   {
     var fileentry = event.data[0];
-        fileentry.peer = transport.uid
+        fileentry.peer = peer_uid
         fileentry.sharedpoint = ""
 
     db.files_put(fileentry, function(error)
@@ -200,13 +200,13 @@ _priv.Transport_Fileslist_init = function(transport, db)
       // we don't dispatch the event twice
 
 
-      db.files_getAll_byPeer(transport.uid, function(error, fileslist)
+      db.files_getAll_byPeer(peer_uid, function(error, fileslist)
       {
         // Notify about fileslist update
         var event = document.createEvent("Event");
             event.initEvent('fileslist._added',true,true);
             event.fileslist = fileslist
-            event.uid = transport.uid
+            event.uid = peer_uid
 
         transport.dispatchEvent(event);
       })
@@ -219,18 +219,18 @@ _priv.Transport_Fileslist_init = function(transport, db)
   transport.addEventListener('fileslist.deleted', function(event)
   {
     var fileentry = event.data[0];
-        fileentry.peer = transport.uid
+        fileentry.peer = peer_uid
 
     // Remove the fileentry from the fileslist
     db.files_delete(fileentry, function(error)
     {
-      db.files_getAll_byPeer(transport.uid, function(error, fileslist)
+      db.files_getAll_byPeer(peer_uid, function(error, fileslist)
       {
         // Notify about fileslist update
         var event = document.createEvent("Event");
             event.initEvent('fileslist._deleted',true,true);
             event.fileslist = fileslist
-            event.uid = transport.uid
+            event.uid = peer_uid
 
         transport.dispatchEvent(event);
       })

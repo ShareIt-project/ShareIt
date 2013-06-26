@@ -14,13 +14,13 @@ module.Local = function(handshake_servers_file, onsuccess)
   }
 
 
-  var peersManager = new PeersManager(handshake_servers_file)
+  var webp2p = new WebP2P(handshake_servers_file)
 
   // Init database
   _priv.DB_init(function(db)
   {
     // Init files manager
-    var filesManager = new _priv.FilesManager(db, peersManager)
+    var filesManager = new _priv.FilesManager(db, webp2p)
 
     // Init cache backup system
     var cacheBackup = new _priv.CacheBackup(db, filesManager)
@@ -52,7 +52,7 @@ module.Local = function(handshake_servers_file, onsuccess)
      */
     self.connectTo = function(uid, labels, incomingChannel, callback)
     {
-      peersManager.connectTo(uid, labels, incomingChannel, callback)
+      webp2p.connectTo(uid, labels, incomingChannel, callback)
     }
 
     self.files_downloading = function(callback)
@@ -72,12 +72,12 @@ module.Local = function(handshake_servers_file, onsuccess)
 
     self.fileslist_disableUpdates = function(uid, callback)
     {
-      peersManager.getChannels()[uid].fileslist_disableUpdates()
+      webp2p.getChannels()[uid].fileslist_disableUpdates()
     }
 
     self.fileslist_query = function(uid, flags, callback)
     {
-      var peers = peersManager.getPeers()
+      var peers = webp2p.getPeers()
       var peer = peers[uid]
 
       if(peer)
@@ -96,7 +96,7 @@ module.Local = function(handshake_servers_file, onsuccess)
 
     self.numPeers = function(callback)
     {
-      callback(null, Object.keys(peersManager.getChannels()).length);
+      callback(null, Object.keys(webp2p.getChannels()).length);
     }
 
     self.searchEngine_search = function(query, callback)
@@ -141,8 +141,8 @@ module.Local = function(handshake_servers_file, onsuccess)
     }
 
 
-    peersManager.addEventListener('error.noPeers', forwardEvent);
-    peersManager.addEventListener('handshake.open', function(event)
+    webp2p.addEventListener('error.noPeers', forwardEvent);
+    webp2p.addEventListener('handshake.open', function(event)
     {
 //      // Restart downloads
 //      db.files_getAll(null, function(error, filelist)

@@ -1,7 +1,7 @@
 var shareit = (function(module){
 var _priv = module._priv = module._priv || {}
 
-_priv.Transport_Search_init = function(transport, db, peersManager)
+_priv.Transport_Search_init = function(transport, db, webp2p)
 {
   EventTarget.call(this);
 
@@ -13,7 +13,7 @@ _priv.Transport_Search_init = function(transport, db, peersManager)
   transport.search_hash = function(hashes)
   {
     if(transport.isPubsub)
-      route.push(peersManager.uid);
+      route.push(webp2p.uid);
 
     console.debug('search.hash', hashes, route);
     transport.emit('search.hash', hashes, route);
@@ -32,7 +32,7 @@ _priv.Transport_Search_init = function(transport, db, peersManager)
 
     // Check if we have answered this request
     for(var i = 0, uid; uid = route[i]; i++)
-      if(uid == peersManager.uid)
+      if(uid == webp2p.uid)
         return;
 
       // Search hashes on own files
@@ -44,7 +44,7 @@ _priv.Transport_Search_init = function(transport, db, peersManager)
     // Re-send the search over all the connected peers
     route.push(transport.uid);
 
-    var channels = peersManager.getChannels();
+    var channels = webp2p.getChannels();
     for(var uid in channels)
     {
       // Ignore peers already on the route path

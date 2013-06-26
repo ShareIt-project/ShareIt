@@ -5,10 +5,10 @@ module.chunksize = 65536;
 
 
 /**
- * 
+ *
  * @param {IDBDatabase} db ShareIt! database.
  */
-_priv.FilesManager = function(db, peersManager)
+_priv.FilesManager = function(db, webp2p)
 {
   EventTarget.call(this);
 
@@ -30,7 +30,7 @@ _priv.FilesManager = function(db, peersManager)
 
   /**
    * Get the channel of one of the peers that have the file from its hash.
-   * 
+   *
    * @param {Fileentry} Fileentry of the file to be downloaded.
    * @return {RTCDataChannel} Channel where we can ask for data of the file.
    */
@@ -41,7 +41,7 @@ _priv.FilesManager = function(db, peersManager)
       for(var i=0, fileentry; fileentry=fileentries[i]; i++)
         if(fileentry.peer != "")
         {
-          var channels = peersManager.getChannels()
+          var channels = webp2p.getChannels()
 
           cb(null, channels[fileentry.peer]);
 
@@ -73,7 +73,7 @@ _priv.FilesManager = function(db, peersManager)
   }
 
 
-  peersManager.addEventListener('peerconnection', function(event)
+  webp2p.addEventListener('peerconnection', function(event)
   {
     var peer = event.peerconnection
     var uid  = event.uid

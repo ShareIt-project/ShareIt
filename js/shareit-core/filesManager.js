@@ -43,10 +43,9 @@ _priv.FilesManager = function(db, webp2p)
         {
           var peers = webp2p.getPeers()
           var peer = peers[fileentry.peer]
-          var channel = peer.channels['shareit']
+          var channel = peer.channels['transfer']
 
           cb(null, channel);
-
           return
         }
 
@@ -75,75 +74,114 @@ _priv.FilesManager = function(db, webp2p)
   }
 
 
+  function initDataChannel_fileslist(channel, uid)
+  {
+    _priv.Transport_init(channel);
+    _priv.Transport_Fileslist_init(channel, db, uid);
+
+    channel.addEventListener('open', function(event)
+    {
+      console.log('Opened datachannel "' + uid + ':' + channel.label + '"');
+
+      self.addEventListener('file.added', function(event)
+      {
+        var fileentry = event.fileentry;
+
+        channel._send_file_added(fileentry);
+      });
+      self.addEventListener('file.deleted', function(event)
+      {
+        var fileentry = event.fileentry;
+
+        channel._send_file_deleted(fileentry);
+      });
+
+      function fileslist_updated(event)
+      {
+        var event2 = document.createEvent("Event");
+            event2.initEvent('fileslist.updated',true,true);
+            event2.fileslist = event.fileslist
+            event2.uid = event.uid
+
+        self.dispatchEvent(event2);
+      }
+
+      channel.addEventListener('fileslist._send', fileslist_updated);
+      channel.addEventListener('fileslist._added', fileslist_updated);
+      channel.addEventListener('fileslist._deleted', fileslist_updated);
+
+      // Quick hack for search
+      var SEND_UPDATES = 1;
+  //    var SMALL_FILES_ACCELERATOR = 2
+      var flags = SEND_UPDATES;
+  //    if()
+  //      flags |= SMALL_FILES_ACCELERATOR
+      channel.fileslist_query(flags)
+    })
+  }
+
+  function initDataChannel_search(channel, uid)
+  {
+//    _priv.Transport_init(channel);
+//    _priv.Transport_Search_init(channel, db);
+
+    channel.addEventListener('open', function(event)
+    {
+      console.log('Opened datachannel "' + uid + ':' + channel.label + '"');
+    })
+  }
+
+  function initDataChannel_transfer(channel, uid)
+  {
+    _priv.Transport_init(channel);
+    _priv.Transport_Transfer_init(channel, db);
+
+    channel.addEventListener('open', function(event)
+    {
+      console.log('Opened datachannel "' + uid + ':' + channel.label + '"');
+
+      channel.addEventListener('transfer._send', function(event)
+      {
+        var fileentry = event.fileentry
+        var chunk     = event.chunk
+        var data      = event.data
+
+        self.updateFile(fileentry, chunk, data);
+      });
+    })
+  }
+
+
   webp2p.addEventListener('peerconnection', function(event)
   {
     var peer = event.peerconnection
     var uid  = event.uid
 
-    console.log('Created peerconnection: ' + event);
+    console.log('Created peerconnection: ' + uid);
 
     peer.addEventListener('datachannel', function(event)
     {
       var channel = event.channel
       console.log(channel.readyState)
 
-      console.log('Created datachannel "' + channel.label + '" with peer "' + uid + '"');
+      console.log('Created datachannel "' + uid + ':' + channel.label + '"');
 
-      if(channel.label == 'shareit')
+      switch(channel.label)
       {
-        _priv.Transport_init(channel);
-        _priv.Transport_Fileslist_init(channel, db, uid);
-//        _priv.Transport_Search_init(channel, db);
-        _priv.Transport_Transfer_init(channel, db);
+        case 'fileslist':
+          initDataChannel_fileslist(channel, uid)
+          break
 
-        channel.addEventListener('open', function(event)
-        {
-          console.log('Opened datachannel "' + channel.label + '" with peer "' + uid + '"');
+        case 'search':
+          initDataChannel_search(channel, uid)
+          break
 
-          self.addEventListener('file.added', function(event)
-          {
-            var fileentry = event.fileentry;
+        case 'transfer':
+          initDataChannel_transfer(channel, uid)
+          break
 
-            channel._send_file_added(fileentry);
-          });
-          self.addEventListener('file.deleted', function(event)
-          {
-            var fileentry = event.fileentry;
-
-            channel._send_file_deleted(fileentry);
-          });
-
-          function fileslist_updated(event)
-          {
-            var event2 = document.createEvent("Event");
-                event2.initEvent('fileslist.updated',true,true);
-                event2.fileslist = event.fileslist
-                event2.uid = event.uid
-
-            self.dispatchEvent(event2);
-          }
-
-          channel.addEventListener('fileslist._send', fileslist_updated);
-          channel.addEventListener('fileslist._added', fileslist_updated);
-          channel.addEventListener('fileslist._deleted', fileslist_updated);
-
-          channel.addEventListener('transfer._send', function(event)
-          {
-            var fileentry = event.fileentry
-            var chunk     = event.chunk
-            var data      = event.data
-
-            self.updateFile(fileentry, chunk, data);
-          });
-
-          // Quick hack for search
-          var SEND_UPDATES = 1;
-      //    var SMALL_FILES_ACCELERATOR = 2
-          var flags = SEND_UPDATES;
-      //    if()
-      //      flags |= SMALL_FILES_ACCELERATOR
-          channel.fileslist_query(flags)
-        })
+        default:
+          console.warn("Unknown channel: "+channel.label)
       }
     })
   })

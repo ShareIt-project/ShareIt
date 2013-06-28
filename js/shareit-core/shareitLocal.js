@@ -14,7 +14,7 @@ module.Local = function(handshake_servers_file, onsuccess)
   }
 
 
-  var webp2p = new WebP2P(handshake_servers_file)
+  var webp2p = new WebP2P(handshake_servers_file, ['fileslist','search','transfer'])
 
   // Init database
   _priv.DB_init(function(db)
@@ -73,7 +73,10 @@ module.Local = function(handshake_servers_file, onsuccess)
     self.fileslist_disableUpdates = function(uid, callback)
     {
       var peers = webp2p.getPeers()
-      peers[uid].channels['shareit'].fileslist_disableUpdates()
+      var peer = peers[uid]
+      var channel = peer.channels['fileslist']
+
+      channel.fileslist_disableUpdates()
     }
 
     self.fileslist_query = function(uid, flags, callback)
@@ -83,7 +86,7 @@ module.Local = function(handshake_servers_file, onsuccess)
 
       if(peer)
       {
-        var channel = peer.channels['shareit']
+        var channel = peer.channels['fileslist']
 
         if(channel)
            channel.fileslist_query(flags)

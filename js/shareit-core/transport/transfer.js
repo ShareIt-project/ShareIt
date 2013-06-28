@@ -118,7 +118,7 @@ _priv.Transport_Transfer_init = function(transport, db)
                 event.chunk = chunk
                 event.data = data
 
-            self.dispatchEvent(event);
+            transport.dispatchEvent(event);
             return
           }
       }

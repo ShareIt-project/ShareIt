@@ -41,9 +41,11 @@ _priv.FilesManager = function(db, webp2p)
       for(var i=0, fileentry; fileentry=fileentries[i]; i++)
         if(fileentry.peer != "")
         {
-          var channels = webp2p.getChannels()
+          var peers = webp2p.getPeers()
+          var peer = peers[fileentry.peer]
+          var channel = peer.channels['shareit']
 
-          cb(null, channels[fileentry.peer]);
+          cb(null, channel);
 
           return
         }

@@ -72,7 +72,8 @@ module.Local = function(handshake_servers_file, onsuccess)
 
     self.fileslist_disableUpdates = function(uid, callback)
     {
-      webp2p.getChannels()[uid].fileslist_disableUpdates()
+      var peers = webp2p.getPeers()
+      peers[uid].channels['shareit'].fileslist_disableUpdates()
     }
 
     self.fileslist_query = function(uid, flags, callback)
@@ -82,7 +83,7 @@ module.Local = function(handshake_servers_file, onsuccess)
 
       if(peer)
       {
-        var channel = peer.channels()['shareit']
+        var channel = peer.channels['shareit']
 
         if(channel)
            channel.fileslist_query(flags)
@@ -96,7 +97,7 @@ module.Local = function(handshake_servers_file, onsuccess)
 
     self.numPeers = function(callback)
     {
-      callback(null, Object.keys(webp2p.getChannels()).length);
+      callback(null, Object.keys(webp2p.getPeers()).length);
     }
 
     self.searchEngine_search = function(query, callback)
@@ -141,8 +142,8 @@ module.Local = function(handshake_servers_file, onsuccess)
     }
 
 
-    webp2p.addEventListener('error.noPeers', forwardEvent);
-    webp2p.addEventListener('handshake.open', function(event)
+    webp2p.addEventListener('disconnected', forwardEvent);
+    webp2p.addEventListener('connected', function(event)
     {
 //      // Restart downloads
 //      db.files_getAll(null, function(error, filelist)

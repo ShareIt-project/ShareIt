@@ -44,8 +44,8 @@ _priv.Transport_Search_init = function(transport, db, webp2p)
     // Re-send the search over all the connected peers
     route.push(transport.uid);
 
-    var channels = webp2p.getChannels();
-    for(var uid in channels)
+    var peers = webp2p.getPeers();
+    for(var uid in peers)
     {
       // Ignore peers already on the route path
       var routed = false;
@@ -58,7 +58,7 @@ _priv.Transport_Search_init = function(transport, db, webp2p)
 
         // Send the search request to the other connected peers
         if(!routed)
-          channels[uid].search_hash(hashes, route);
+          peers[uid].channels['search'].search_hash(hashes, route);
     }
   });
 }

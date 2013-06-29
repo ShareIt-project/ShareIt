@@ -15,11 +15,13 @@ if(typeof FileReader == 'undefined')
  * @param transport
  * @param {IDBdatabase} db ShareIt! database.
  */
-_priv.Transport_Transfer_init = function(transport, db)
+_priv.Transport_Transfer_init = function(transport, db, filesManager)
 {
   // Filereader support (be able to host files from the filesystem)
   if(typeof FileReader == 'undefined')
     return;
+
+  _priv.Transport_init(transport);
 
   /**
    * Catch request of file data
@@ -137,6 +139,21 @@ _priv.Transport_Transfer_init = function(transport, db)
   {
     transport.emit('transfer.query', fileentry.hash, chunk);
   };
+
+
+  transport.addEventListener('open', function(event)
+  {
+    console.log('Opened datachannel "' + transport.label + '"');
+
+    transport.addEventListener('transfer._send', function(event)
+    {
+      var fileentry = event.fileentry
+      var chunk     = event.chunk
+      var data      = event.data
+
+      filesManager.updateFile(fileentry, chunk, data);
+    });
+  })
 }
 
 return module

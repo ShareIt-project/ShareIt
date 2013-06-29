@@ -61,6 +61,11 @@ _priv.Transport_Search_init = function(transport, db, webp2p)
           peers[uid].channels['search'].search_hash(hashes, route);
     }
   });
+
+  transport.addEventListener('open', function(event)
+  {
+    console.log('Opened datachannel "' + channel.label + '"');
+  })
 }
 
 return module

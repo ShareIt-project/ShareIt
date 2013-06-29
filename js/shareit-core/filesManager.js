@@ -74,84 +74,6 @@ _priv.FilesManager = function(db, webp2p)
   }
 
 
-  function initDataChannel_fileslist(channel, uid)
-  {
-    _priv.Transport_init(channel);
-    _priv.Transport_Fileslist_init(channel, db, uid);
-
-    channel.addEventListener('open', function(event)
-    {
-      console.log('Opened datachannel "' + uid + ':' + channel.label + '"');
-
-      self.addEventListener('file.added', function(event)
-      {
-        var fileentry = event.fileentry;
-
-        channel._send_file_added(fileentry);
-      });
-      self.addEventListener('file.deleted', function(event)
-      {
-        var fileentry = event.fileentry;
-
-        channel._send_file_deleted(fileentry);
-      });
-
-      function fileslist_updated(event)
-      {
-        var event2 = document.createEvent("Event");
-            event2.initEvent('fileslist.updated',true,true);
-            event2.fileslist = event.fileslist
-            event2.uid = event.uid
-
-        self.dispatchEvent(event2);
-      }
-
-      channel.addEventListener('fileslist._send', fileslist_updated);
-      channel.addEventListener('fileslist._added', fileslist_updated);
-      channel.addEventListener('fileslist._deleted', fileslist_updated);
-
-      // Quick hack for search
-      var SEND_UPDATES = 1;
-  //    var SMALL_FILES_ACCELERATOR = 2
-      var flags = SEND_UPDATES;
-  //    if()
-  //      flags |= SMALL_FILES_ACCELERATOR
-      channel.fileslist_query(flags)
-    })
-  }
-
-  function initDataChannel_search(channel, uid)
-  {
-//    _priv.Transport_init(channel);
-//    _priv.Transport_Search_init(channel, db);
-
-    channel.addEventListener('open', function(event)
-    {
-      console.log('Opened datachannel "' + uid + ':' + channel.label + '"');
-    })
-  }
-
-  function initDataChannel_transfer(channel, uid)
-  {
-    _priv.Transport_init(channel);
-    _priv.Transport_Transfer_init(channel, db);
-
-    channel.addEventListener('open', function(event)
-    {
-      console.log('Opened datachannel "' + uid + ':' + channel.label + '"');
-
-      channel.addEventListener('transfer._send', function(event)
-      {
-        var fileentry = event.fileentry
-        var chunk     = event.chunk
-        var data      = event.data
-
-        self.updateFile(fileentry, chunk, data);
-      });
-    })
-  }
-
-
   webp2p.addEventListener('peerconnection', function(event)
   {
     var peer = event.peerconnection
@@ -169,15 +91,15 @@ _priv.FilesManager = function(db, webp2p)
       switch(channel.label)
       {
         case 'fileslist':
-          initDataChannel_fileslist(channel, uid)
+          _priv.Transport_Fileslist_init(channel, db, self, uid)
           break
 
-        case 'search':
-          initDataChannel_search(channel, uid)
-          break
+//        case 'search':
+//          initDataChannel_search(channel, uid)
+//          break
 
         case 'transfer':
-          initDataChannel_transfer(channel, uid)
+          _priv.Transport_Transfer_init(channel, db, self)
           break
 
         default:

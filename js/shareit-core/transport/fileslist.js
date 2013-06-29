@@ -2,8 +2,10 @@ var shareit = (function(module){
 var _priv = module._priv = module._priv || {}
 
 
-_priv.Transport_Fileslist_init = function(transport, db, peer_uid)
+_priv.Transport_Fileslist_init = function(transport, db, filesManager, peer_uid)
 {
+  _priv.Transport_init(transport);
+
   // Host
 
   function generateFileObject(fileentry)
@@ -236,6 +238,47 @@ _priv.Transport_Fileslist_init = function(transport, db, peer_uid)
       })
     })
   });
+
+
+  transport.addEventListener('open', function(event)
+  {
+    console.log('Opened datachannel "' + peer_uid + ':' + transport.label + '"');
+
+    filesManager.addEventListener('file.added', function(event)
+    {
+      var fileentry = event.fileentry;
+
+      transport._send_file_added(fileentry);
+    });
+    filesManager.addEventListener('file.deleted', function(event)
+    {
+      var fileentry = event.fileentry;
+
+      transport._send_file_deleted(fileentry);
+    });
+
+    function fileslist_updated(event)
+    {
+      var event2 = document.createEvent("Event");
+          event2.initEvent('fileslist.updated',true,true);
+          event2.fileslist = event.fileslist
+          event2.uid = event.uid
+
+      filesManager.dispatchEvent(event2);
+    }
+
+    transport.addEventListener('fileslist._send', fileslist_updated);
+    transport.addEventListener('fileslist._added', fileslist_updated);
+    transport.addEventListener('fileslist._deleted', fileslist_updated);
+
+    // Quick hack for search
+    var SEND_UPDATES = 1;
+//    var SMALL_FILES_ACCELERATOR = 2
+    var flags = SEND_UPDATES;
+//    if()
+//      flags |= SMALL_FILES_ACCELERATOR
+    transport.fileslist_query(flags)
+  })
 }
 
 return module

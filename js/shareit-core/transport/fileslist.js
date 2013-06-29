@@ -53,28 +53,6 @@ _priv.Transport_Fileslist_init = function(transport, db, filesManager, peer_uid)
   };
 
 
-  var send_updates = false;
-
-  /**
-   * Notify to the other peer that we have added a new file
-   * @param {Fileentry} fileentry {Fileentry} of the new added file.
-   */
-  transport._send_file_added = function(fileentry)
-  {
-    if(send_updates)
-      transport.emit('fileslist.added', generateFileObject(fileentry));
-  };
-
-  /**
-     * Notify to the other peer that we have deleted a new file
-     * @param {Fileentry} fileentry {Fileentry} of the deleted file.
-     */
-  transport._send_file_deleted = function(fileentry)
-  {
-    if(send_updates)
-      transport.emit('fileslist.deleted', fileentry.hash);
-  };
-
   var SEND_UPDATES = 1;
 
   /**
@@ -244,17 +222,28 @@ _priv.Transport_Fileslist_init = function(transport, db, filesManager, peer_uid)
   {
     console.log('Opened datachannel "' + peer_uid + ':' + transport.label + '"');
 
+    var send_updates = false;
+
+    /**
+     * Notify to the other peer that we have added a new file
+     */
     filesManager.addEventListener('file.added', function(event)
     {
       var fileentry = event.fileentry;
 
-      transport._send_file_added(fileentry);
+      if(send_updates)
+        transport.emit('fileslist.added', generateFileObject(fileentry));
     });
+
+    /**
+       * Notify to the other peer that we have deleted a new file
+       */
     filesManager.addEventListener('file.deleted', function(event)
     {
       var fileentry = event.fileentry;
 
-      transport._send_file_deleted(fileentry);
+      if(send_updates)
+        transport.emit('fileslist.deleted', fileentry.hash);
     });
 
     function fileslist_updated(event)

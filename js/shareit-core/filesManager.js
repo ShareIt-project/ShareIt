@@ -19,14 +19,17 @@ _priv.FilesManager = function(db, webp2p)
   hasher.onhashed = function(fileentry)
   {
     // Notify the other peers about the new hashed file
-    self._send_file_added(fileentry);
+    var event = document.createEvent("Event");
+        event.initEvent('file.added',true,true);
+        event.fileentry = fileentry
+
+    this.dispatchEvent(event);
   };
   hasher.ondeleted = function(fileentry)
   {
     // Notify the other peers about the deleted file
     self._send_file_deleted(fileentry);
   };
-
 
   /**
    * Get the channel of one of the peers that have the file from its hash.
@@ -273,20 +276,6 @@ _priv.FilesManager = function(db, webp2p)
           self.transfer_end(fileentry);
       });
     }
-  };
-
-  /**
-   * Notify to all peers that I have added a new file (both by the user or
-   * downloaded)
-   * @param {Fileentry} Fileentry of the file that have been added.
-   */
-  this._send_file_added = function(fileentry)
-  {
-    var event = document.createEvent("Event");
-        event.initEvent('file.added',true,true);
-        event.fileentry = fileentry
-
-    this.dispatchEvent(event);
   };
 
   /**

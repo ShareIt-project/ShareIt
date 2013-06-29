@@ -10,8 +10,6 @@ module.chunksize = 65536;
  */
 _priv.FilesManager = function(db, webp2p)
 {
-  EventTarget.call(this);
-
   var self = this;
 
   // Init hasher
@@ -25,11 +23,22 @@ _priv.FilesManager = function(db, webp2p)
 
     this.dispatchEvent(event);
   };
-  hasher.ondeleted = function(fileentry)
+
+  /**
+   * Notify to all peers that I have deleted a file (so it's not accesible)
+   * @param {Fileentry} Fileentry of the file that have been deleted.
+   */
+  function send_file_deleted(fileentry)
   {
-    // Notify the other peers about the deleted file
-    self._send_file_deleted(fileentry);
+    var event = document.createEvent("Event");
+        event.initEvent('file.deleted',true,true);
+        event.fileentry = fileentry
+
+    this.dispatchEvent(event);
   };
+
+  // Notify the other peers about the deleted file
+  hasher.ondeleted = send_file_deleted
 
   /**
    * Get the channel of one of the peers that have the file from its hash.
@@ -278,19 +287,6 @@ _priv.FilesManager = function(db, webp2p)
     }
   };
 
-  /**
-   * Notify to all peers that I have deleted a file (so it's not accesible)
-   * @param {Fileentry} Fileentry of the file that have been deleted.
-   */
-  this._send_file_deleted = function(fileentry)
-  {
-    var event = document.createEvent("Event");
-        event.initEvent('file.deleted',true,true);
-        event.fileentry = fileentry
-
-    this.dispatchEvent(event);
-  };
-
 
   this.files_downloading = function(cb)
   {
@@ -359,9 +355,10 @@ _priv.FilesManager = function(db, webp2p)
   this.delete = function(fileentry)
   {
     db.files_delete(fileentry)
-    this._send_file_deleted(fileentry)
+    send_file_deleted(fileentry)
   }
 }
+_priv.FilesManager.prototype = new EventTarget();
 
 return module
 })(shareit || {})

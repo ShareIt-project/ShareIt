@@ -7,8 +7,6 @@ var _priv = module._priv = module._priv || {}
  */
 _priv.Transport_init = function(transport)
 {
-  EventTarget.call(transport);
-
   /**
    *  Compose and send message
    */
@@ -33,6 +31,7 @@ _priv.Transport_init = function(transport)
     this.dispatchEvent(event);
   };
 }
+_priv.Transport_init.prototype = new EventTarget()
 
 return module
 })(shareit || {})

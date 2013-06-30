@@ -38,20 +38,6 @@ _priv.Transport_Fileslist_init = function(transport, db, filesManager, peer_uid)
     return result;
   }
 
-  /**
-   * Addapt and send to the other peer our list of shared files
-   * @param {Array} fileslist Our list of {Fileentry}s.
-   */
-  transport._send_files_list = function(fileslist)
-  {
-    var files_send = [];
-
-    for(var i = 0, fileentry; fileentry = fileslist[i]; i++)
-      files_send.push(generateFileObject(fileentry));
-
-    transport.emit('fileslist.send', files_send);
-  };
-
 
   var SEND_UPDATES = 1;
 
@@ -68,7 +54,15 @@ _priv.Transport_Fileslist_init = function(transport, db, filesManager, peer_uid)
         console.error(error)
 
       else
-        transport._send_files_list(fileslist)
+      {
+        // Addapt and send to the other peer our list of shared files
+        var files_send = [];
+
+        for(var i = 0, fileentry; fileentry = fileslist[i]; i++)
+          files_send.push(generateFileObject(fileentry));
+
+        transport.emit('fileslist.send', files_send);
+      };
     });
 
     send_updates = flags & SEND_UPDATES;

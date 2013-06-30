@@ -187,8 +187,7 @@ _priv.SearchEngine = function(db, filesManager)
 
     // [ToDo] Use individiual events for add and remove
     for(var i=0, fileentry; fileentry=fileentries[i]; i++)
-      self.add(fileentry)
-//      update(fileentry)
+      update(fileentry)
   })
 }
 

@@ -3,8 +3,6 @@ var _priv = module._priv = module._priv || {}
 
 _priv.Transport_Search_init = function(transport, db, webp2p)
 {
-  EventTarget.call(this);
-
   transport.search = function(text)
   {
 
@@ -67,6 +65,7 @@ _priv.Transport_Search_init = function(transport, db, webp2p)
     console.log('Opened datachannel "' + channel.label + '"');
   })
 }
+_priv.Transport_Search_init.prototype = new EventTarget();
 
 return module
 })(shareit || {})

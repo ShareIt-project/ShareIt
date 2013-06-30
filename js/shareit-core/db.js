@@ -5,9 +5,9 @@ var indexedDB = indexedDB || webkitIndexedDB || mozIndexedDB || msIndexedDB;
 
 /**
  * Initializes the database
- * @param {Function} onsuccess Callback called when database is ready.
+ * @param {Function} callback Callback called when database is ready.
  */
-_priv.DB_init = function(onsuccess)
+_priv.DB_init = function(callback)
 {
   var version = 2;
 
@@ -33,7 +33,7 @@ _priv.DB_init = function(onsuccess)
   var request = indexedDB.open('ShareIt', version);
   request.onerror = function(event)
   {
-    alert("Why didn't you allow my web app to use IndexedDB?!");
+    callback("Why didn't you allow my web app to use IndexedDB?!");
   };
   request.onsuccess = function(event)
   {
@@ -381,8 +381,7 @@ _priv.DB_init = function(onsuccess)
       db._put('files', fileentry, callback);
     };
 
-    if(onsuccess)
-       onsuccess(db);
+    callback(null, db);
   };
   request.onupgradeneeded = function(event)
   {

@@ -1,10 +1,8 @@
 var shareit = (function(module){
 var _priv = module._priv = module._priv || {}
 
-module.Local = function(handshake_servers_file, onsuccess)
+module.Local = function(handshake_servers_file, callback)
 {
-  EventTarget.call(this);
-
   var self = this
 
 
@@ -17,8 +15,14 @@ module.Local = function(handshake_servers_file, onsuccess)
   var webp2p = new WebP2P(handshake_servers_file, ['fileslist','search','transfer'])
 
   // Init database
-  _priv.DB_init(function(db)
+  _priv.DB_init(function(error, db)
   {
+    if(error)
+    {
+      callback(error)
+      return
+    }
+
     // Init files manager
     var filesManager = new _priv.FilesManager(db, webp2p)
 
@@ -177,10 +181,10 @@ module.Local = function(handshake_servers_file, onsuccess)
 
     filesManager.addEventListener('sharedpoints.update', forwardEvent);
 
-    if(onsuccess)
-      onsuccess(self)
+    onsuccess(null, self)
   })
 }
+module.Local.prototype = new EventTarget()
 
 return module
 })(shareit || {})

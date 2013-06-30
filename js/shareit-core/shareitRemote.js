@@ -3,10 +3,8 @@
 var shareit = (function(module){
 var _priv = module._priv = module._priv || {}
 
-module.Remote = function(channel, onsuccess)
+module.Remote = function(channel, callback)
 {
-  EventTarget.call(this);
-
   var self = this
 
 
@@ -107,9 +105,9 @@ module.Remote = function(channel, onsuccess)
     call('fileslist_disableUpdates', uid, callback)
   }
 
-  this.fileslist_query = function(uid, callback)
+  this.fileslist_query = function(uid, flags, callback)
   {
-    call('fileslist_query', uid, callback)
+    call('fileslist_query', uid, flags, callback)
   }
 
   this.numPeers = function(callback)
@@ -141,9 +139,9 @@ module.Remote = function(channel, onsuccess)
     call('transfer_begin', fileentry)
   }
 
-  if(onsuccess)
-    onsuccess(this)
+  callback(null, this)
 }
+module.Remote.prototype = new EventTarget()
 
 return module
 })(shareit || {})

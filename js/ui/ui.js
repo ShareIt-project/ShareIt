@@ -46,6 +46,15 @@ module.UI = function(shareit)
   });
 
 
+  shareit.addEventListener('disconnected', function(event)
+  {
+    console.warning('Disconnected from WebP2P network');
+
+    // Allow backup of cache if there are items
+    dialogConfig.preferencesDialogOpen(1);
+  });
+
+
   shareit.addEventListener('error', function(event)
   {
     console.error(event.error);

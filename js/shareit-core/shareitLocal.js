@@ -149,7 +149,6 @@ module.Local = function(handshake_servers_file, callback)
     }
 
 
-    webp2p.addEventListener('disconnected', forwardEvent);
     webp2p.addEventListener('connected', function(event)
     {
 //      // Restart downloads
@@ -169,6 +168,8 @@ module.Local = function(handshake_servers_file, callback)
 
       self.dispatchEvent(event);
     });
+    webp2p.addEventListener('disconnected', forwardEvent);
+    webp2p.addEventListener('error',        forwardEvent);
 
     filesManager.addEventListener('file.added',   forwardEvent);
     filesManager.addEventListener('file.deleted', forwardEvent);

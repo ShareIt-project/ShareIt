@@ -1,7 +1,7 @@
 var shareit = (function(module){
 var _priv = module._priv = module._priv || {}
 
-module.Local = function(handshake_servers_file, callback)
+module.Local = function(handshake_servers, callback)
 {
   var self = this
 
@@ -12,7 +12,7 @@ module.Local = function(handshake_servers_file, callback)
   }
 
 
-  var webp2p = new WebP2P(handshake_servers_file, ['fileslist','search','transfer'])
+  var webp2p = new WebP2P(handshake_servers, ['fileslist','search','transfer'])
 
   // Init database
   _priv.DB_init(function(error, db)

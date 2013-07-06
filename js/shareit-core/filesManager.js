@@ -21,7 +21,7 @@ _priv.FilesManager = function(db, webp2p)
         event.initEvent('file.added',true,true);
         event.fileentry = fileentry
 
-    this.dispatchEvent(event);
+    self.dispatchEvent(event);
   };
 
   /**

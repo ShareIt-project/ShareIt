@@ -182,7 +182,7 @@ module.Local = function(handshake_servers, callback)
 
     filesManager.addEventListener('sharedpoints.update', forwardEvent);
 
-    onsuccess(null, self)
+    callback(null, self)
   })
 }
 module.Local.prototype = new EventTarget()

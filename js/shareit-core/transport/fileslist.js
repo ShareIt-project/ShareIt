@@ -6,6 +6,8 @@ _priv.Transport_Fileslist_init = function(transport, db, filesManager, peer_uid)
 {
   _priv.Transport_init(transport);
 
+  var send_updates = false;
+
   // Host
 
   function generateFileObject(fileentry)
@@ -215,8 +217,6 @@ _priv.Transport_Fileslist_init = function(transport, db, filesManager, peer_uid)
   transport.addEventListener('open', function(event)
   {
     console.log('Opened datachannel "' + peer_uid + ':' + transport.label + '"');
-
-    var send_updates = false;
 
     /**
      * Notify to the other peer that we have added a new file

@@ -115,7 +115,8 @@ _priv.FilesManager = function(db, webp2p)
           break
 
         default:
-          console.warn("Unknown channel: "+channel.label)
+          console.warn("Unknown channel '"+channel.label+"', clossing it")
+//          channel.close()
       }
     })
   })

@@ -114,6 +114,10 @@ _priv.FilesManager = function(db, webp2p)
           _priv.Transport_Transfer_init(channel, db, self)
           break
 
+        case webp2p.routingLabel:
+          console.info("Ignoring WebP2P routing channel '"+channel.label+"'")
+          break
+
         default:
           console.warn("Unknown channel '"+channel.label+"', clossing it")
 //          channel.close()

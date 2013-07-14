@@ -67,13 +67,35 @@ var core = new shareit.Local(null, function(error, core)
 
 self.onmessage = function(event)
 {
-  function result(err, res)
+  function result(err, res, cb)
   {
+    if(typeof res === 'function')
+    {
+      cb  = res;
+      res = null;
+    }
+
+    function result2(request)
+    {
+      request.id = requestID++;
+
+      handlers[request.id] = cb
+
+      setTimeout(function()
+      {
+        var handler = handlers[request.id];
+        if(handler)
+          handler.call(self, new Error('Timed Out'));
+
+        delete handlers[request.id];
+      }, timeout);
+    }
+
     // requests without an id are notifications, to which responses are
     // supressed
     if(event.id !== null)
     {
-      var response = {id: event.id}
+      var response = {ack: event.id}
 
       if(err)
         response.error = err.message
@@ -81,7 +103,19 @@ self.onmessage = function(event)
       else
         response.result = res || null
 
+      if(cb)
+        result2(response)
+
       self.send(response)
+    }
+
+    else if(cb)
+    {
+      var request = {}
+
+      result2(request)
+
+      self.send(request)
     }
   }
 

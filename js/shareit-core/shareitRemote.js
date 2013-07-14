@@ -21,18 +21,18 @@ module.Remote = function(channel, callback)
 
   channel.onmessage = function(event)
   {
-    var id = event.id
-    if(id === null || id === undefined)
+    var ack = event.ack
+    if(ack === null || ack === undefined)
     {
       forwardEvent(event)
       return
     }
 
-    var handler = handlers[id];
+    var handler = handlers[ack];
     if(handler)
       handler.call(self, event.error, event.result);
 
-    delete handlers[id];
+    delete handlers[ack];
   }
 
 
@@ -48,16 +48,19 @@ module.Remote = function(channel, callback)
       args: args
     }
 
-    handlers[request.id] = cb
-
-    setTimeout(function()
+    if(cb)
     {
-      var handler = handlers[request.id];
-      if(handler)
-        handler.call(self, new Error('Timed Out'));
+      handlers[request.id] = cb
 
-      delete handlers[request.id];
-    }, timeout);
+      setTimeout(function()
+      {
+        var handler = handlers[request.id];
+        if(handler)
+          handler.call(self, new Error('Timed Out'));
+
+        delete handlers[request.id];
+      }, timeout);
+    }
 
     channel.send(request);
   }

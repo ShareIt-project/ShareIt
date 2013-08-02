@@ -3,19 +3,19 @@ window.addEventListener('DOMContentLoaded', function()
 {
   var cm = new CompatibilityManager();
 
-  // DataChannel polyfill
-  switch(DCPF_install('wss://datachannel-polyfill.nodejitsu.com'))
-  {
-    case 'old browser':
-      cm.addError('DataChannel', "Your browser doesn't support PeerConnection" +
-                                 " so ShareIt! can't work.");
-      break;
-
-    case 'polyfill':
-      cm.addWarning('DataChannel', "Your browser doesn't support DataChannels" +
-                                   ' natively, so file transfers performance ' +
-                                   'would be affected or not work at all.');
-  }
+//  // DataChannel polyfill
+//  switch(DCPF_install('wss://datachannel-polyfill.nodejitsu.com'))
+//  {
+//    case 'old browser':
+//      cm.addError('DataChannel', "Your browser doesn't support PeerConnection" +
+//                                 " so ShareIt! can't work.");
+//      break;
+//
+//    case 'polyfill':
+//      cm.addWarning('DataChannel', "Your browser doesn't support DataChannels" +
+//                                   ' natively, so file transfers performance ' +
+//                                   'would be affected or not work at all.');
+//  }
 
   // Filereader support (be able to host files from the filesystem)
   if(typeof FileReader == 'undefined')

@@ -38,12 +38,16 @@ window.addEventListener('DOMContentLoaded', function()
     cm.show();
 
     // Start loading the webapp
-    var core = new shareit.Local('json/handshake.json',
+    var core = new shareit.Local(config.handshake_servers,
 //    var core = new shareit.Remote(new Worker('js/shareit-core/shareit_backend.js',
 //                                             'json/handshake.json'),
-    function(core)
+    function(error, core)
     {
-      ui.UI(core)
+      if(error)
+        alert(error)
+
+      else
+        ui.UI(core)
     })
   });
 });

@@ -46,9 +46,18 @@ module.UI = function(shareit)
   });
 
 
-  shareit.addEventListener('error.noPeers', function()
+  shareit.addEventListener('disconnected', function(event)
   {
-    console.error('Not connected to any peer');
+    console.warning('Disconnected from WebP2P network');
+
+    // Allow backup of cache if there are items
+    dialogConfig.preferencesDialogOpen(1);
+  });
+
+
+  shareit.addEventListener('error', function(event)
+  {
+    console.error(event.error);
 
     // Allow backup of cache if there are items
     dialogConfig.preferencesDialogOpen(1);
@@ -60,7 +69,7 @@ module.UI = function(shareit)
                                     dialogConfig.preferencesDialogOpen);
 
   // Set UID on user interface
-  shareit.addEventListener('handshake.open', function(event)
+  shareit.addEventListener('connected', function(event)
   {
     var uid = event.uid;
 
@@ -71,10 +80,14 @@ module.UI = function(shareit)
     var promptUID = new _priv.PromptUID('dialog-prompt', function(uid)
     {
       // Create connection with the other peer
-      shareit.connectTo(uid, null, function(error, channel)
+      shareit.connectTo(uid, null, null, function(error)
       {
         if(error)
+        {
           alert(error);
+          console.error(uid, error);
+        }
+
         else
           tabsMain.openOrCreate('peer', uid);
       });

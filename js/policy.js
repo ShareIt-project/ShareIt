@@ -76,7 +76,23 @@ function policy(onaccept, oncancel)
   // Checking the policy the first time on this session, load the policy text
   else
   {
-    var http_request = new XMLHttpRequest();
+    function fillPolicy(http_request)
+    {
+      // Get policy modification date
+//      var lastModified = http_request.getResponseHeader('Last-Modified') || 0; // January 1, 1970
+      var lastModified = 0; // January 1, 1970
+      policy.lastModified = (new Date(lastModified)).getTime();
+
+      // Set the policy text on the dialog
+      policy.dialog = $('#dialog-policy');
+//      policy.dialog.find('#msg').html(http_request.response);
+
+      // Check if policy was accepted
+      check();
+    }
+
+    fillPolicy();
+/*    var http_request = new XMLHttpRequest();
     http_request.open('GET', 'policy.html');
     http_request.onload = function()
     {
@@ -84,19 +100,8 @@ function policy(onaccept, oncancel)
       switch(this.status)
       {
         case 200:  // Ok
-        {
-          // Get policy modification date
-          var lastModified = http_request.getResponseHeader('Last-Modified') || 0; // January 1, 1970
-          policy.lastModified = (new Date(lastModified)).getTime();
-
-          // Set the policy text on the dialog
-          policy.dialog = $('#dialog-policy');
-          policy.dialog.find('#msg').html(http_request.response);
-
-          // Check if policy was accepted
-          check();
-        }
-        break;
+          fillPolicy(http_request);
+          break;
 
         default:  // Error
           console.error('There was an error loading the Usage Policy');
@@ -107,5 +112,5 @@ function policy(onaccept, oncancel)
       console.error('There was an error loading the Usage Policy');
     };
     http_request.send();
-  }
+*/  }
 }

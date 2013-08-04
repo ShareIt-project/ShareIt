@@ -6,7 +6,6 @@
  * well... the data persistence lacks about some functionality... :-P
  * @author piranna
  */
-indexedDB = indexedDB || webkitIndexedDB || mozIndexedDB || msIndexedDB;
 
 
 /**
@@ -16,11 +15,10 @@ indexedDB = indexedDB || webkitIndexedDB || mozIndexedDB || msIndexedDB;
 function testIDBBlobSupport(callback)
 {
   var dbname = "detect-blob-support";
-  var idb = indexedDB;
 
-  idb.deleteDatabase(dbname).onsuccess = function()
+  indexedDB.deleteDatabase(dbname).onsuccess = function()
   {
-    var request = idb.open(dbname, 1);
+    var request = indexedDB.open(dbname, 1);
 
     request.onupgradeneeded = function()
     {
@@ -32,7 +30,10 @@ function testIDBBlobSupport(callback)
 
       try
       {
-        db.transaction("store", "readwrite").objectStore("store").put(new Blob(), "key");
+        var transaction = db.transaction("store", "readwrite");
+
+        transaction.objectStore("store").put(new Blob(), "key");
+
         callback(true);
       }
       catch(e)
@@ -42,7 +43,7 @@ function testIDBBlobSupport(callback)
       finally
       {
         db.close();
-        idb.deleteDatabase(dbname);
+        indexedDB.deleteDatabase(dbname);
       }
     };
   };
@@ -147,12 +148,12 @@ function IdbJS_install()
 
     this.delete = function()
     {
-      
+
     }
 
     this.update = function(value)
     {
-      
+
     }
 
     this.__defineGetter__("source", function()
@@ -627,7 +628,7 @@ function IdbJS_install()
   {
     this.abort = function()
     {
-      
+
     }
 
     this.objectStore = function(name)

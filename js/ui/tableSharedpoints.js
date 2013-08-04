@@ -1,11 +1,6 @@
 var ui = (function(module){
 var _priv = module._priv = module._priv || {}
 
-function No_FileReader()
-{
-  $('#Sharedpoints').html('Your browser is not modern enough to serve as a host. :(<br /><br />(Try Chrome or Firefox!)');
-}
-
 
 _priv.TableSharedpoints = function(tableId, onclickFactory)
 {

@@ -58,7 +58,7 @@ can also host it on [DropBox](https://www.dropbox.com/help/201/en) if desired.
 It is currently publicly hosted on
 
 * [5Apps]  (https://5apps.com/demos/piranna/shareit)
-* [GitHub] (http://piranna.github.com/ShareIt)
+* [GitHub] (http://shareit-project.github.io/ShareIt)
 * [DropBox](https://dl-web.dropbox.com/spa/je1wmwnmw0lbae2/ShareIt!/index.html)
 (development, cutting-edge instance. It would not work...)
 
